@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# Create database directory if it doesn't exist
-mkdir -p database
+# Determine database path
+if [ -n "$RAILWAY_VOLUME_MOUNT_PATH" ]; then
+    DB_PATH="$RAILWAY_VOLUME_MOUNT_PATH/database.sqlite"
+    echo "Using Railway volume at: $DB_PATH"
+else
+    # Create database directory if it doesn't exist
+    mkdir -p database
+    DB_PATH="database/database.sqlite"
+    echo "Using local database at: $DB_PATH"
+fi
 
 # Create SQLite database file if it doesn't exist
-if [ ! -f database/database.sqlite ]; then
-    touch database/database.sqlite
-    echo "Created new database.sqlite file"
+if [ ! -f "$DB_PATH" ]; then
+    touch "$DB_PATH"
+    echo "Created new database.sqlite file at $DB_PATH"
 fi
 
 # Run migrations
