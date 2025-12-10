@@ -13,10 +13,14 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // Only seed if products table is empty
-        if (Product::count() > 0) {
-            $this->command->info('Products already exist. Skipping seeding.');
+        $existingCount = Product::count();
+        
+        if ($existingCount > 0) {
+            $this->command->info("Products already exist ({$existingCount} products found). Skipping seeding.");
             return;
         }
+        
+        $this->command->info('Seeding products...');
 
         $products = [
             [
@@ -78,5 +82,7 @@ class ProductSeeder extends Seeder
         foreach ($products as $product) {
             Product::create($product);
         }
+        
+        $this->command->info('Successfully seeded ' . count($products) . ' products!');
     }
 }
