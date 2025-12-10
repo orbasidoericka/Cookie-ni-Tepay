@@ -15,8 +15,14 @@
                 <a href="{{ route('shop.index') }}" class="btn btn-primary" style="width: auto;">Browse Products</a>
             </div>
         @else
+            @if($hasStockIssues)
+                <div class="alert alert-error" style="margin-bottom: 1rem;">
+                    ⚠️ Some items in your cart exceed available stock. Quantities have been adjusted.
+                </div>
+            @endif
+
             @foreach($products as $item)
-                <div class="cart-item">
+                <div class="cart-item {{ $item['has_stock_issue'] ? 'stock-warning' : '' }}">
                     <div class="cart-item-image">
                         @if($item['product']->image)
                             <img src="{{ $item['product']->image }}" alt="{{ $item['product']->name }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
@@ -25,16 +31,32 @@
                         @endif
                     </div>
                     <div class="cart-item-info">
-                        <div class="cart-item-name">{{ $item['product']->name }}</div>
+                        <div class="cart-item-name">
+                            {{ $item['product']->name }}
+                            @if($item['product']->stock <= 0)
+                                <span class="stock-badge out-of-stock">Out of Stock</span>
+                            @elseif($item['product']->stock < 5)
+                                <span class="stock-badge low-stock">Only {{ $item['product']->stock }} left</span>
+                            @endif
+                        </div>
                         <div class="cart-item-price">₱{{ number_format($item['product']->price, 2) }} each</div>
+                        @if($item['has_stock_issue'])
+                            <div style="color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem;">
+                                ⚠️ Only {{ $item['product']->stock }} available
+                            </div>
+                        @endif
                     </div>
                     <div class="cart-item-quantity">
-                        <form action="{{ route('cart.update', $item['product']) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
-                            @csrf
-                            @method('PATCH')
-                            <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" class="quantity-input">
-                            <button type="submit" class="btn btn-secondary btn-sm">Update</button>
-                        </form>
+                        @if($item['product']->stock > 0)
+                            <form action="{{ route('cart.update', $item['product']) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
+                                @csrf
+                                @method('PATCH')
+                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" max="{{ $item['product']->stock }}" class="quantity-input">
+                                <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                            </form>
+                        @else
+                            <span style="color: #dc3545; font-weight: 500;">Unavailable</span>
+                        @endif
                     </div>
                     <div class="cart-item-subtotal">
                         ₱{{ number_format($item['subtotal'], 2) }}

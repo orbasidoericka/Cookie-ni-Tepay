@@ -26,10 +26,23 @@ class CheckoutController extends Controller
 
         $products = [];
         $total = 0;
+        $hasStockIssues = false;
 
         foreach ($cart as $id => $quantity) {
             $product = Product::find($id);
             if ($product) {
+                // Check stock availability
+                if ($product->stock <= 0) {
+                    $hasStockIssues = true;
+                    continue; // Skip out of stock items
+                }
+                
+                if ($product->stock < $quantity) {
+                    $hasStockIssues = true;
+                    // Adjust quantity to available stock
+                    $quantity = $product->stock;
+                }
+                
                 $products[] = [
                     'product' => $product,
                     'quantity' => $quantity,
@@ -37,6 +50,16 @@ class CheckoutController extends Controller
                 ];
                 $total += $product->price * $quantity;
             }
+        }
+
+        if (empty($products)) {
+            return redirect()->route('shop.cart')
+                ->with('error', 'All items in your cart are out of stock.');
+        }
+
+        if ($hasStockIssues) {
+            return redirect()->route('shop.cart')
+                ->with('error', 'Some items have stock issues. Please review your cart.');
         }
 
         return view('shop.checkout', compact('products', 'total'));

@@ -381,6 +381,40 @@
                 gap: 1rem;
             }
         }
+
+        /* Stock Status Badges */
+        .stock-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .out-of-stock {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .low-stock {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .in-stock {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stock-warning {
+            border-left: 3px solid #ffc107 !important;
+            background: #fff9e6 !important;
+        }
+
+        .cart-item.stock-warning .cart-item-info {
+            position: relative;
+        }
     </style>
 </head>
 <body>
