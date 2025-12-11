@@ -14,8 +14,9 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            color: #2c2c2c;
+            line-height: 1.7;
+            font-size: 16px;
         }
 
         /* Navigation */
@@ -41,6 +42,7 @@
             font-weight: bold;
             color: white;
             text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .logo:hover {
@@ -58,6 +60,7 @@
             text-decoration: none;
             font-weight: 500;
             transition: opacity 0.3s;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
 
         .nav-links a:hover {
@@ -111,12 +114,16 @@
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
+            font-weight: 500;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
         }
 
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+            font-weight: 500;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
         }
 
         /* Page Title */
@@ -124,6 +131,8 @@
             font-size: 2rem;
             margin-bottom: 2rem;
             color: #333;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-weight: 600;
         }
 
         /* Product Grid */
@@ -167,16 +176,18 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: #333;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .product-description {
-            color: #666;
-            font-size: 0.9rem;
+            color: #555;
+            font-size: 0.95rem;
             margin-bottom: 1rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            line-height: 1.5;
         }
 
         .product-price {
@@ -184,6 +195,7 @@
             font-weight: bold;
             color: #D9C4B0;
             margin-bottom: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
         }
 
         .product-stock {
@@ -215,6 +227,7 @@
             color: #5a4a3a;
             width: 100%;
             font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
 
         .btn-primary:hover {
@@ -285,10 +298,15 @@
         .cart-item-name {
             font-weight: 600;
             margin-bottom: 0.25rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+            color: #2c2c2c;
         }
 
         .cart-item-price {
-            color: #D9C4B0;
+            color: #C19A6B;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-weight: 600;
             font-weight: 500;
         }
 
@@ -330,10 +348,12 @@
         .cart-total {
             font-size: 1.5rem;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .cart-total span {
             color: #D9C4B0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
         }
 
         .cart-actions {

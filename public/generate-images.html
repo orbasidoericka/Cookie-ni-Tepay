@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Product Images</title>
+</head>
+<body>
+    <h1>Product Image Placeholders</h1>
+    <p>Right-click each image and "Save image as..." to save them to public/images/products/</p>
+    
+    <div id="images"></div>
+
+    <script>
+        const products = [
+            { id: 1, name: 'Butter Croissant', emoji: '🥐', color: '#F4E4C1' },
+            { id: 2, name: 'Chocolate Danish', emoji: '🍫', color: '#6F4E37' },
+            { id: 3, name: 'Blueberry Muffin', emoji: '🧁', color: '#B4A7D6' },
+            { id: 4, name: 'Cinnamon Roll', emoji: '🌀', color: '#C19A6B' },
+            { id: 5, name: 'Almond Croissant', emoji: '🌰', color: '#D2B48C' },
+            { id: 6, name: 'Apple Turnover', emoji: '🍎', color: '#FFB6C1' },
+            { id: 7, name: 'Lemon Tart', emoji: '🍋', color: '#FFF44F' },
+            { id: 8, name: 'Chocolate Chip Scone', emoji: '🍪', color: '#D2691E' },
+            { id: 9, name: 'Malunggay Pandesal', emoji: '🥖', color: '#90EE90' }
+        ];
+
+        const container = document.getElementById('images');
+
+        products.forEach(product => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, product.color);
+            gradient.addColorStop(1, '#FFFFFF');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 400, 300);
+
+            // Emoji
+            ctx.font = '120px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(product.emoji, 200, 150);
+
+            // Name
+            ctx.font = 'bold 24px Arial';
+            ctx.fillStyle = '#333';
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(product.name, 200, 260);
+
+            const div = document.createElement('div');
+            div.style.marginBottom = '20px';
+            
+            const img = new Image();
+            img.src = canvas.toDataURL('image/jpeg', 0.9);
+            img.style.border = '2px solid #ddd';
+            img.style.borderRadius = '8px';
+            
+            const filename = document.createElement('p');
+            filename.textContent = `Filename: product-${product.id}.jpg`;
+            filename.style.fontWeight = 'bold';
+            
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = `product-${product.id}.jpg`;
+            link.textContent = 'Download';
+            link.style.display = 'inline-block';
+            link.style.padding = '10px 20px';
+            link.style.background = '#4CAF50';
+            link.style.color = 'white';
+            link.style.textDecoration = 'none';
+            link.style.borderRadius = '4px';
+            link.style.marginTop = '10px';
+            
+            div.appendChild(filename);
+            div.appendChild(img);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(link);
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html>

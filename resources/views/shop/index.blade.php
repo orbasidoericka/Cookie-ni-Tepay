@@ -17,9 +17,9 @@
                 <div class="product-card">
                     <div class="product-image">
                         @if($product->image)
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
+                            <img src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->name }}">
                         @else
-                            📦
+                            <img src="{{ asset('images/products/placeholder.jpg') }}" alt="{{ $product->name }}">
                         @endif
                     </div>
                     <div class="product-info">
