@@ -5,7 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware([SecurityHeaders::class])->group(function () {
+Route::middleware(['web', SecurityHeaders::class])->group(function () {
 	Route::get('/', [ShopController::class, 'index'])->name('shop.index');
 	Route::get('/cart', [ShopController::class, 'cart'])->name('shop.cart');
 	Route::post('/cart/add/{product}', [ShopController::class, 'addToCart'])->name('cart.add');
