@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production (Railway, etc.)
+        if (config('app.env') === 'production' || request()->header('X-Forwarded-Proto') === 'https') {
+            URL::forceScheme('https');
+        }
+
         // Enforce secure session cookies when appropriate
         $appUrl = env('APP_URL') ?: config('app.url');
         if ($appUrl && str_starts_with($appUrl, 'https')) {
