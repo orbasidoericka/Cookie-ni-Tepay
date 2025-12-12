@@ -72,10 +72,8 @@ Copy the output and paste it as `APP_KEY` in Railway variables.
 
 **Option B: Generate in Railway**
 1. Go to your Railway project
-2. Open the deployment logs
 3. Find the generated key after first deployment
 4. Or use Railway's CLI to run: `railway run php artisan key:generate`
-
 #### 5. Update APP_URL
 
 After deployment, Railway will provide a URL like:
@@ -83,27 +81,38 @@ After deployment, Railway will provide a URL like:
 https://your-app.up.railway.app
 ```
 
-Update the `APP_URL` environment variable with this URL.
-
 #### 6. Seed the Database (Optional)
 
-If you want to populate the products:
+If you want to populate the products after you have provisioned a MySQL plugin:
 
 1. In Railway dashboard, click on your service
-2. Go to **"Settings"** → **"Deploy Triggers"**
-3. Or use Railway CLI:
+2. Go to **"Settings"** → **"Deploy Triggers"** (or run manually via CLI)
+3. Or use Railway CLI to run seeders:
+
 ```powershell
-railway run php artisan db:seed --class=ProductSeeder
+railway run php artisan db:seed --class=ProductSeeder --force
 ```
 
-#### 7. Access Your Site
+### Helper scripts (local)
 
-Your site will be live at: `https://your-app.up.railway.app`
+Two helper scripts are included to help import `database/legends.sql` after you create your MySQL plugin and set the Railway variables locally (or in your shell environment):
 
----
+- `scripts/import-db.sh` : Linux/macOS (or WSL on Windows) with a local `mysql` client installed.
+- `scripts/import-db.ps1` : Windows PowerShell script to import via the `mysql` client.
 
-## 📁 File Structure for Deployment
+Usage example (PowerShell):
 
+```powershell
+$env:DB_HOST="<host>"; $env:DB_PORT="<port>"; $env:DB_USERNAME="<user>"; $env:DB_PASSWORD="<pass>"; $env:DB_DATABASE="<db>"
+.\scripts\import-db.ps1 -SqlFile database/legends.sql
+```
+
+Usage example (bash):
+
+```bash
+export DB_HOST=<host> DB_PORT=<port> DB_USERNAME=<user> DB_PASSWORD=<pass> DB_DATABASE=<db>
+./scripts/import-db.sh database/legends.sql
+```
 The following files have been created for deployment:
 
 ### Railway Configuration Files
@@ -124,6 +133,65 @@ The following files have been created for deployment:
 - The app uses **SQLite** which is perfect for Railway deployment
 - Database file is stored persistently in Railway's volume
 - No need for separate database service
+
+### MySQL (Optional, Recommended if you have existing data)
+
+If you'd like to use MySQL on Railway instead of SQLite (for example, to import your existing `database/legends.sql` dump), follow these steps:
+
+1. Add a **MySQL plugin** to your Railway project
+	- In your Railway project dashboard, click **Plugins** → **Add Plugin** → **MySQL**
+	- Railway will provision a MySQL database and provide connection details.
+
+2. Configure environment variables in Railway
+	- Go to **Variables** on the service page and add the following:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=<from-railway-plugin>
+DB_PORT=<from-railway-plugin>
+DB_DATABASE=<from-railway-plugin>
+DB_USERNAME=<from-railway-plugin>
+DB_PASSWORD=<from-railway-plugin>
+APP_KEY=base64:<generated or set manually>
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://<your-railway-domain>.up.railway.app
+```
+
+3. Generate or copy `APP_KEY` into Railway
+	- Locally run: `php artisan key:generate --show` and copy the output into Railway's `APP_KEY` variable.
+
+4. Import the `database/legends.sql` dump
+
+There are several ways to import your existing `database/legends.sql` into Railway's MySQL:
+
+**Option A — Railway Dashboard UI (recommended)**
+- Open the MySQL plugin in Railway and use the **Import** option to upload `database/legends.sql`.
+
+**Option B — Use MySQL client locally**
+- Install MySQL client on your machine and run (replace placeholders with your Railway plugin credentials):
+
+```powershell
+mysql -h <DB_HOST> -P <DB_PORT> -u <DB_USERNAME> -p <DB_DATABASE> < database/legends.sql
+```
+
+**Option C — Use Railway CLI**
+- Install Railway CLI (`npm i -g @railway/cli` or via brew).
+- Run `railway connect` and use the provided command to connect, then run import as in Option B.
+
+5. Run migrations and seeders (if necessary)
+
+```powershell
+railway run php artisan migrate --force
+railway run php artisan db:seed --class=ProductSeeder --force
+```
+
+6. Verify the site
+- Visit the `APP_URL` and confirm your MySQL data is present.
+
+Notes:
+- If your `DB_CONNECTION` is set to `mysql` in Railways' variables, the app will use the MySQL plugin.
+- Adjust `SESSION_DRIVER`, `CACHE_DRIVER`, and other storage variables if you plan to use serverless persistence or a different cache backend.
 
 ### Storage
 - Railway provides persistent storage for SQLite database
