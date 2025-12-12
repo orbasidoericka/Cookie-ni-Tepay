@@ -256,6 +256,11 @@
             color: white;
         }
 
+        .btn-block {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
         .btn-secondary:hover {
             background: #5a6268;
         }
@@ -329,6 +334,16 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             text-align: center;
+        }
+
+        .quantity-display {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .cart-item-subtotal {
@@ -441,6 +456,130 @@
 
         .cart-item.stock-warning .cart-item-info {
             position: relative;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            animation: slideDown 0.3s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .modal-price {
+            font-size: 1.3rem;
+            color: #D9C4B0;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .modal-stock {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .quantity-selector {
+            margin: 1.5rem 0;
+        }
+
+        .quantity-selector label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .quantity-controls input {
+            width: 80px;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: linear-gradient(135deg, #BBDCE5 0%, #CFAB8D 100%);
+            color: #5a4a3a;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .qty-btn:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        .qty-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </head>

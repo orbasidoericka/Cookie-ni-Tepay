@@ -47,6 +47,13 @@ class ShopController extends Controller
 
     public function addToCart(Request $request, Product $product)
     {
+        // Validate quantity
+        $request->validate([
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $quantity = $request->input('quantity', 1);
+
         // Check if product has stock
         if ($product->stock <= 0) {
             return redirect()->back()->with('error', $product->name . ' is currently out of stock!');
@@ -55,22 +62,19 @@ class ShopController extends Controller
         $cart = session()->get('cart', []);
         
         // Calculate new quantity
-        $newQuantity = isset($cart[$product->id]) ? $cart[$product->id] + 1 : 1;
+        $currentQty = isset($cart[$product->id]) ? $cart[$product->id] : 0;
+        $newQuantity = $currentQty + $quantity;
         
         // Check if new quantity exceeds available stock
         if ($newQuantity > $product->stock) {
             return redirect()->back()->with('error', 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!');
         }
         
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]++;
-        } else {
-            $cart[$product->id] = 1;
-        }
+        $cart[$product->id] = $newQuantity;
 
         session()->put('cart', $cart);
 
-        return redirect()->back()->with('success', $product->name . ' added to cart!');
+        return redirect()->back()->with('success', $quantity . ' × ' . $product->name . ' added to cart!');
     }
 
     public function removeFromCart(Product $product)

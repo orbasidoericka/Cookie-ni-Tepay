@@ -55,9 +55,7 @@
                                value="{{ old('contact_number') }}" 
                                required
                                placeholder="09XXXXXXXXX"
-                               pattern="09[0-9]{9}"
                                maxlength="11">
-                        <small style="color: #666; font-size: 0.85rem;">Format: 09XXXXXXXXX (11 digits)</small>
                         @error('contact_number')
                             <span class="error-message">{{ $message }}</span>
                         @enderror

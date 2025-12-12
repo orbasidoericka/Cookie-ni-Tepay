@@ -48,12 +48,7 @@
                     </div>
                     <div class="cart-item-quantity">
                         @if($item['product']->stock > 0)
-                            <form action="{{ route('cart.update', $item['product']) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
-                                @csrf
-                                @method('PATCH')
-                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" max="{{ $item['product']->stock }}" class="quantity-input">
-                                <button type="submit" class="btn btn-secondary btn-sm">Update</button>
-                            </form>
+                            <span class="quantity-display">Qty: {{ $item['quantity'] }}</span>
                         @else
                             <span style="color: #dc3545; font-weight: 500;">Unavailable</span>
                         @endif
