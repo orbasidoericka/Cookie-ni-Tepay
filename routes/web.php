@@ -39,4 +39,18 @@ Route::middleware(['web', SecurityHeaders::class])->group(function () {
 
 	// API endpoint for testing concurrent transactions
 	Route::post('/api/simulate-concurrency', [CheckoutController::class, 'simulateConcurrency'])->name('api.simulate');
+		// Debug route (only enabled in APP_DEBUG=true) - shows auth & session status for troubleshooting
+		if (config('app.debug')) {
+			Route::get('/debug/status', function () {
+				return response()->json([
+					'app_key_set' => (bool) config('app.key'),
+					'session_driver' => config('session.driver'),
+					'session_cookie' => env('SESSION_COOKIE', null),
+					'session_secure' => config('session.secure'),
+					'auth_check' => Auth::check(),
+					'auth_user_id' => Auth::id(),
+					'cookies' => request()->cookies->all(),
+				], 200);
+			});
+		}
 });
