@@ -274,6 +274,11 @@
                     </div>
                 </div>
 
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <label for="remember">Remember Me</label>
+                </div>
+
                 <div class="forgot-password">
                     <a href="#">Forgot Password?</a>
                 </div>
