@@ -599,6 +599,17 @@
                         <span class="cart-count">{{ $cartCount }}</span>
                     @endif
                 </a>
+                @auth
+                    <span style="color:white;margin-left:1rem;">Hi, {{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;margin-left:1rem;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm" style="background:rgba(255,255,255,0.15);border-radius:6px;color:white;padding:0.5rem 0.75rem;border:none;">Logout</button>
+                    </form>
+                @endauth
+                @guest
+                    <a href="{{ route('login') }}" style="margin-left:1rem;">Login</a>
+                    <a href="{{ route('register') }}" style="margin-left:0.7rem;">Register</a>
+                @endguest
             </div>
         </div>
     </nav>

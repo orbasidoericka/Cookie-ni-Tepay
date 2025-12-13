@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AuthController;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Support\Facades\Route;
 
@@ -18,11 +19,20 @@ Route::middleware(['web', SecurityHeaders::class])->group(function () {
 	Route::patch('/cart/update/{product}', [ShopController::class, 'updateCart'])->name('cart.update');
 	Route::delete('/cart/clear', [ShopController::class, 'clearCart'])->name('cart.clear');
 
-	// Checkout routes (ACID-compliant transactions)
-	Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-	Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
-	Route::get('/order/{order}/confirmation', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
-	Route::get('/orders', [CheckoutController::class, 'history'])->name('orders.history');
+	// Checkout routes (ACID-compliant transactions) — require authentication
+	Route::middleware('auth')->group(function () {
+		Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+		Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+		Route::get('/order/{order}/confirmation', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+		Route::get('/orders', [CheckoutController::class, 'history'])->name('orders.history');
+	});
+
+	// Authentication
+	Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+	Route::post('/login', [AuthController::class, 'login'])->name('login');
+	Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+	Route::post('/register', [AuthController::class, 'register'])->name('register');
+	Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 	// API endpoint for testing concurrent transactions
 	Route::post('/api/simulate-concurrency', [CheckoutController::class, 'simulateConcurrency'])->name('api.simulate');
