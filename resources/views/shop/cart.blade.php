@@ -76,7 +76,11 @@
                         @method('DELETE')
                         <button type="submit" class="btn btn-secondary">Clear Cart</button>
                     </form>
-                    <a href="{{ route('checkout.index') }}" class="btn btn-primary">Proceed to Checkout</a>
+                    @auth
+                        <a href="{{ route('checkout.index') }}" class="btn btn-primary">Proceed to Checkout</a>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-primary">Login to Checkout</a>
+                    @endauth
                 </div>
             </div>
         @endif
