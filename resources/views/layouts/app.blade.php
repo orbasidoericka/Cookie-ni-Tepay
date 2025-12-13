@@ -269,22 +269,47 @@
             transform: scale(1.02);
         }
 
-        /* Product Action Button Hover Effect */
-        .product-action-btn {
-            position: relative;
-            overflow: hidden;
+        /* Product Action Buttons Hover Effect */
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
         }
 
-        .product-action-btn .btn-text-hover {
-            display: none;
+        .product-card:hover .product-actions {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
 
-        .product-card:hover .product-action-btn .btn-text-default {
-            display: none;
+        .btn-buy-now {
+            flex: 1;
+            background: linear-gradient(135deg, #BBDCE5 0%, #CFAB8D 100%);
+            color: #5a4a3a;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
 
-        .product-card:hover .product-action-btn .btn-text-hover {
-            display: inline;
+        .btn-add-cart {
+            background: rgba(187, 220, 229, 0.3);
+            color: #5a4a3a;
+            padding: 0.5rem 0.75rem;
+            font-size: 1.2rem;
+            min-width: 45px;
+            border: 2px solid rgba(187, 220, 229, 0.5);
+        }
+
+        .btn-add-cart:hover {
+            background: rgba(187, 220, 229, 0.5);
+            border-color: rgba(187, 220, 229, 0.8);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
         }
 
         .btn-danger {
