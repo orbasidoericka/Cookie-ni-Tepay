@@ -58,6 +58,9 @@ class ShopController extends Controller
 
         // Check if product has stock
         if ($product->stock <= 0) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => $product->name . ' is currently out of stock!'], 400);
+            }
             return redirect()->back()->with('error', $product->name . ' is currently out of stock!');
         }
 
@@ -69,12 +72,22 @@ class ShopController extends Controller
         
         // Check if new quantity exceeds available stock
         if ($newQuantity > $product->stock) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!'], 400);
+            }
             return redirect()->back()->with('error', 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!');
         }
         
         $cart[$product->id] = $newQuantity;
 
         session()->put('cart', $cart);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true, 
+                'message' => $quantity . ' × ' . $product->name . ' added to cart!'
+            ]);
+        }
 
         return redirect()->back()->with('success', $quantity . ' × ' . $product->name . ' added to cart!');
     }

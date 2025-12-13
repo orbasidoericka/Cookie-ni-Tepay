@@ -31,8 +31,8 @@
                         </div>
                         @if($product->stock > 0)
                             <div class="product-actions">
-                                <button type="button" class="btn btn-primary btn-buy-now" onclick="openModal({{ $product->id }}, '{{ $product->name }}', {{ $product->stock }}, {{ $product->price }})">Buy Now</button>
-                                <button type="button" class="btn btn-sm btn-add-cart" onclick="openModal({{ $product->id }}, '{{ $product->name }}', {{ $product->stock }}, {{ $product->price }})">🛒</button>
+                                <button type="button" class="btn btn-primary btn-buy-now" onclick="openBuyNowModal({{ $product->id }}, '{{ $product->name }}', {{ $product->stock }}, {{ $product->price }})">Buy Now</button>
+                                <button type="button" class="btn btn-sm btn-add-cart" onclick="openAddToCartModal({{ $product->id }}, '{{ $product->name }}', {{ $product->stock }}, {{ $product->price }})">🛒</button>
                             </div>
                         @else
                             <button class="btn btn-secondary" disabled>Out of Stock</button>
@@ -46,19 +46,19 @@
     <!-- Add to Cart Modal -->
     <div id="cartModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalProductName">Product Name</h2>
-            <p class="modal-price">₱<span id="modalProductPrice">0.00</span></p>
-            <p class="modal-stock">Available: <span id="modalProductStock">0</span></p>
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2 id="cartModalProductName">Product Name</h2>
+            <p class="modal-price">₱<span id="cartModalProductPrice">0.00</span></p>
+            <p class="modal-stock">Available: <span id="cartModalProductStock">0</span></p>
             
             <form id="addToCartForm" method="POST">
                 @csrf
                 <div class="quantity-selector">
-                    <label for="quantity">Quantity:</label>
+                    <label for="cartQuantity">Quantity:</label>
                     <div class="quantity-controls">
-                        <button type="button" class="qty-btn" onclick="decrementQty()">−</button>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="1" readonly>
-                        <button type="button" class="qty-btn" onclick="incrementQty()">+</button>
+                        <button type="button" class="qty-btn" onclick="decrementCartQty()">−</button>
+                        <input type="number" id="cartQuantity" name="quantity" value="1" min="1" max="1" readonly>
+                        <button type="button" class="qty-btn" onclick="incrementCartQty()">+</button>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Add to Cart</button>
@@ -66,45 +66,131 @@
         </div>
     </div>
 
-    <script>
-        let maxStock = 1;
+    <!-- Buy Now Modal -->
+    <div id="buyNowModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBuyNowModal()">&times;</span>
+            <h2 id="buyNowModalProductName">Product Name</h2>
+            <p class="modal-price">₱<span id="buyNowModalProductPrice">0.00</span></p>
+            <p class="modal-stock">Available: <span id="buyNowModalProductStock">0</span></p>
+            
+            <form id="buyNowForm" method="POST">
+                @csrf
+                <div class="quantity-selector">
+                    <label for="buyNowQuantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button type="button" class="qty-btn" onclick="decrementBuyNowQty()">−</button>
+                        <input type="number" id="buyNowQuantity" name="quantity" value="1" min="1" max="1" readonly>
+                        <button type="button" class="qty-btn" onclick="incrementBuyNowQty()">+</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Buy Now</button>
+            </form>
+        </div>
+    </div>
 
-        function openModal(productId, productName, stock, price) {
+    <script>
+        let cartMaxStock = 1;
+        let buyNowMaxStock = 1;
+
+        // Add to Cart Modal Functions
+        function openAddToCartModal(productId, productName, stock, price) {
             document.getElementById('cartModal').style.display = 'block';
-            document.getElementById('modalProductName').textContent = productName;
-            document.getElementById('modalProductPrice').textContent = parseFloat(price).toFixed(2);
-            document.getElementById('modalProductStock').textContent = stock;
-            document.getElementById('quantity').value = 1;
-            document.getElementById('quantity').max = stock;
+            document.getElementById('cartModalProductName').textContent = productName;
+            document.getElementById('cartModalProductPrice').textContent = parseFloat(price).toFixed(2);
+            document.getElementById('cartModalProductStock').textContent = stock;
+            document.getElementById('cartQuantity').value = 1;
+            document.getElementById('cartQuantity').max = stock;
             document.getElementById('addToCartForm').action = '/cart/add/' + productId;
-            maxStock = stock;
+            cartMaxStock = stock;
         }
 
-        function closeModal() {
+        function closeCartModal() {
             document.getElementById('cartModal').style.display = 'none';
         }
 
-        function incrementQty() {
-            const qtyInput = document.getElementById('quantity');
+        function incrementCartQty() {
+            const qtyInput = document.getElementById('cartQuantity');
             let currentValue = parseInt(qtyInput.value);
-            if (currentValue < maxStock) {
+            if (currentValue < cartMaxStock) {
                 qtyInput.value = currentValue + 1;
             }
         }
 
-        function decrementQty() {
-            const qtyInput = document.getElementById('quantity');
+        function decrementCartQty() {
+            const qtyInput = document.getElementById('cartQuantity');
             let currentValue = parseInt(qtyInput.value);
             if (currentValue > 1) {
                 qtyInput.value = currentValue - 1;
             }
         }
 
-        // Close modal when clicking outside
+        // Buy Now Modal Functions
+        function openBuyNowModal(productId, productName, stock, price) {
+            document.getElementById('buyNowModal').style.display = 'block';
+            document.getElementById('buyNowModalProductName').textContent = productName;
+            document.getElementById('buyNowModalProductPrice').textContent = parseFloat(price).toFixed(2);
+            document.getElementById('buyNowModalProductStock').textContent = stock;
+            document.getElementById('buyNowQuantity').value = 1;
+            document.getElementById('buyNowQuantity').max = stock;
+            
+            // Buy Now form submits to add to cart then redirects to checkout
+            document.getElementById('buyNowForm').onsubmit = function(e) {
+                e.preventDefault();
+                const quantity = document.getElementById('buyNowQuantity').value;
+                
+                // Add to cart via fetch
+                fetch('/cart/add/' + productId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ quantity: quantity })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Redirect to checkout page
+                    window.location.href = '/checkout';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+            };
+            
+            buyNowMaxStock = stock;
+        }
+
+        function closeBuyNowModal() {
+            document.getElementById('buyNowModal').style.display = 'none';
+        }
+
+        function incrementBuyNowQty() {
+            const qtyInput = document.getElementById('buyNowQuantity');
+            let currentValue = parseInt(qtyInput.value);
+            if (currentValue < buyNowMaxStock) {
+                qtyInput.value = currentValue + 1;
+            }
+        }
+
+        function decrementBuyNowQty() {
+            const qtyInput = document.getElementById('buyNowQuantity');
+            let currentValue = parseInt(qtyInput.value);
+            if (currentValue > 1) {
+                qtyInput.value = currentValue - 1;
+            }
+        }
+
+        // Close modals when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('cartModal');
-            if (event.target == modal) {
-                closeModal();
+            const cartModal = document.getElementById('cartModal');
+            const buyNowModal = document.getElementById('buyNowModal');
+            if (event.target == cartModal) {
+                closeCartModal();
+            }
+            if (event.target == buyNowModal) {
+                closeBuyNowModal();
             }
         }
     </script>

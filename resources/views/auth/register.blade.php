@@ -260,14 +260,6 @@
                 </div>
 
                 <button type="submit" class="btn-register">Create Account</button>
-
-                <div class="divider">OR</div>
-
-                <div class="social-login">
-                    <a href="{{ route('shop.index') }}">
-                        Continue as Guest →
-                    </a>
-                </div>
             </form>
         </div>
     </div>
