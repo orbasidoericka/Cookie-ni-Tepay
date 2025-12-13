@@ -87,7 +87,7 @@ class CheckoutController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'contact_number' => ['required', 'regex:/^09\d{9}$/', 'digits:11'],
-            'address' => 'required|string|max:500',
+            'address' => 'nullable|string|max:500',
             'notes' => 'nullable|string|max:1000',
         ], [
             'contact_number.regex' => 'Contact number must start with 09 and be exactly 11 digits.',
@@ -206,7 +206,7 @@ class CheckoutController extends Controller
                     'user_id' => auth()->id(),
                     'customer_name' => $validated['customer_name'],
                     'contact_number' => $validated['contact_number'],
-                    'address' => $validated['address'],
+                    'address' => $validated['address'] ?? null,
                     'total_amount' => $totalAmount,
                     'status' => 'completed',
                     'notes' => $validated['notes'] ?? null,
