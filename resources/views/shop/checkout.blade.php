@@ -39,7 +39,7 @@
                         <input type="text" 
                                id="customer_name" 
                                name="customer_name" 
-                               value="{{ old('customer_name') }}" 
+                               value="{{ old('customer_name', auth()->user()->name) }}" 
                                required
                                placeholder="Enter your full name">
                         @error('customer_name')
