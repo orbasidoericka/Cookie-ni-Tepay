@@ -33,4 +33,6 @@ RUN chmod -R 777 storage bootstrap/cache
 EXPOSE 8080
 
 # Start application
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
