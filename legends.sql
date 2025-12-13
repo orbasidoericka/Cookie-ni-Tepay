@@ -1,87 +1,12 @@
--- legends.sql has been moved to database/legends.sql to match repo structure
--- see database/legends.sql for the SQL dump used for the application.
-
-
--- File moved: database/legends.sql
-
---
+-- Buttercloud Bakery Database Schema
+-- Updated: December 13, 2025
+-- 
+-- This is the current database schema with unnecessary tables removed.
+-- Tables removed: cache, cache_locks, failed_jobs, jobs, job_batches, sessions
+-- Columns removed: users.email_verified_at
+-- 
 -- Database: `legends`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cache`
---
-
-CREATE TABLE `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumtext NOT NULL,
-  `expiration` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cache_locks`
---
-
-CREATE TABLE `cache_locks` (
-  `key` varchar(255) NOT NULL,
-  `owner` varchar(255) NOT NULL,
-  `expiration` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `failed_jobs`
---
-
-CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `jobs`
---
-
-CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `queue` varchar(255) NOT NULL,
-  `payload` longtext NOT NULL,
-  `attempts` tinyint(3) UNSIGNED NOT NULL,
-  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
-  `available_at` int(10) UNSIGNED NOT NULL,
-  `created_at` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `job_batches`
---
-
-CREATE TABLE `job_batches` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `total_jobs` int(11) NOT NULL,
-  `pending_jobs` int(11) NOT NULL,
-  `failed_jobs` int(11) NOT NULL,
-  `failed_job_ids` longtext NOT NULL,
-  `options` mediumtext DEFAULT NULL,
-  `cancelled_at` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `finished_at` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -116,7 +41,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 CREATE TABLE `orders` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `order_number` varchar(255) NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
   `customer_name` varchar(255) NOT NULL,
   `contact_number` varchar(255) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
@@ -131,10 +56,10 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `order_number`, `user_id`, `customer_name`, `contact_number`, `total_amount`, `status`, `notes`, `created_at`, `updated_at`) VALUES
-(1, 'ORD-693985A618A95-20251210', NULL, 'Mayumi Muchachi', '09277675124', 65.00, 'completed', NULL, '2025-12-10 06:37:26', '2025-12-10 06:37:26'),
-(2, 'ORD-69398675E1185-20251210', NULL, 'Mayumi Muchachi', '09277675124', 160.00, 'completed', NULL, '2025-12-10 06:40:53', '2025-12-10 06:40:53'),
-(3, 'ORD-6939868987668-20251210', NULL, 'Mayumi Muchachi', '09277675124', 65.00, 'completed', NULL, '2025-12-10 06:41:13', '2025-12-10 06:41:13'),
-(4, 'ORD-693986AE6BE4B-20251210', NULL, 'Mayumi Muchachi', '09277675124', 1820.00, 'completed', NULL, '2025-12-10 06:41:50', '2025-12-10 06:41:50');
+(1, 'ORD-693985A618A95-20251210', 1, 'Mayumi Muchachi', '09277675124', 65.00, 'completed', NULL, '2025-12-10 06:37:26', '2025-12-10 06:37:26'),
+(2, 'ORD-69398675E1185-20251210', 1, 'Mayumi Muchachi', '09277675124', 160.00, 'completed', NULL, '2025-12-10 06:40:53', '2025-12-10 06:40:53'),
+(3, 'ORD-6939868987668-20251210', 1, 'Mayumi Muchachi', '09277675124', 65.00, 'completed', NULL, '2025-12-10 06:41:13', '2025-12-10 06:41:13'),
+(4, 'ORD-693986AE6BE4B-20251210', 1, 'Mayumi Muchachi', '09277675124', 1820.00, 'completed', NULL, '2025-12-10 06:41:50', '2025-12-10 06:41:50');
 
 -- --------------------------------------------------------
 
@@ -155,7 +80,7 @@ CREATE TABLE `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `order_items`
+-- Data for table `order_items`
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `price`, `quantity`, `subtotal`, `created_at`, `updated_at`) VALUES
@@ -195,7 +120,7 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `products`
+-- Data for table `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `stock`, `created_at`, `updated_at`) VALUES
@@ -210,29 +135,6 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `stock`, 
 (9, 'Malunggay Pandesal', 'Traditional Filipino bread roll infused with nutritious malunggay leaves. Soft and healthy.', 50.00, NULL, 50, '2025-12-10 06:34:54', '2025-12-10 06:34:54');
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `sessions`
---
-
-CREATE TABLE `sessions` (
-  `id` varchar(255) NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `payload` longtext NOT NULL,
-  `last_activity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `sessions`
---
-
-INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('lzG2q6uUWDXt9hRfw6e15dqX9CSRSeA4xdZGcnL7', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVmx6UVN5NkVndGYxWDBQaEJHRWVNeUpnZjNEOW5yUVY3cVJEOEJFbiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9vcmRlcnMiO3M6NToicm91dGUiO3M6MTQ6Im9yZGVycy5oaXN0b3J5Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1765377729);
-
--- --------------------------------------------------------
-
 --
 -- Table structure for table `users`
 --
@@ -241,64 +143,18 @@ CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `cache`
---
-ALTER TABLE `cache`
-  ADD PRIMARY KEY (`key`);
-
---
--- Indexes for table `cache_locks`
---
-ALTER TABLE `cache_locks`
-  ADD PRIMARY KEY (`key`);
-
---
--- Indexes for table `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
-
---
--- Indexes for table `jobs`
---
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `jobs_queue_index` (`queue`);
-
---
--- Indexes for table `job_batches`
---
-ALTER TABLE `job_batches`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `orders_order_number_unique` (`order_number`),
-  ADD KEY `orders_user_id_foreign` (`user_id`),
-  ADD KEY `orders_order_number_index` (`order_number`),
-  ADD KEY `orders_status_index` (`status`);
 
 --
 -- Indexes for table `order_items`
@@ -321,12 +177,11 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `sessions`
+-- Indexes for table `orders`
 --
-ALTER TABLE `sessions`
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sessions_user_id_index` (`user_id`),
-  ADD KEY `sessions_last_activity_index` (`last_activity`);
+  ADD KEY `orders_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -334,22 +189,6 @@ ALTER TABLE `sessions`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `failed_jobs`
---
-ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `jobs`
---
-ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -382,14 +221,10 @@ ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
---
-
---
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `order_items`
