@@ -30,6 +30,9 @@
                         <div class="order-customer">
                             <p><strong>Customer:</strong> {{ $order->customer_name }}</p>
                             <p><strong>Contact:</strong> {{ $order->contact_number }}</p>
+                            @if($order->address)
+                                <p><strong>Address:</strong> {{ $order->address }}</p>
+                            @endif
                         </div>
                         
                         <div class="order-items-summary">
