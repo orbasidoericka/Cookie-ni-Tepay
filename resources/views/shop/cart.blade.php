@@ -46,10 +46,78 @@
                             </div>
                         @endif
                     </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    function updateQtyOnServer(productId, newQty, controls) {
+                                        const url = '/cart/update/' + productId;
+                                        const formData = new URLSearchParams();
+                                        formData.append('quantity', newQty);
+
+                                        fetch(url, {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                'Content-Type': 'application/x-www-form-urlencoded'
+                                            },
+                                            body: formData.toString()
+                                        })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                // update the quantity input
+                                                controls.input.value = data.quantity;
+                                                // update subtotal for this item
+                                                const row = controls.container.closest('.cart-item');
+                                                const subtotalEl = row.querySelector('.cart-item-subtotal');
+                                                if (subtotalEl) subtotalEl.textContent = '₱' + data.subtotal;
+                                                // update cart total
+                                                const totalEl = document.querySelector('.cart-total span');
+                                                if (totalEl) totalEl.textContent = '₱' + data.total;
+                                            } else {
+                                                alert(data.message || 'Could not update cart.');
+                                            }
+                                        })
+                                        .catch(err => {
+                                            console.error('Update qty error', err);
+                                            alert('Could not update cart.');
+                                        });
+                                    }
+
+                                    document.querySelectorAll('.qty-controls').forEach(function (container) {
+                                        const productId = container.getAttribute('data-product-id');
+                                        const max = parseInt(container.getAttribute('data-max')) || 0;
+                                        const input = container.querySelector('.qty-input');
+                                        const dec = container.querySelector('.qty-decrement');
+                                        const inc = container.querySelector('.qty-increment');
+
+                                        const controls = {container, input};
+
+                                        dec.addEventListener('click', function () {
+                                            let current = parseInt(input.value) || 0;
+                                            if (current > 1) {
+                                                const newQty = current - 1;
+                                                updateQtyOnServer(productId, newQty, controls);
+                                            }
+                                        });
+
+                                        inc.addEventListener('click', function () {
+                                            let current = parseInt(input.value) || 0;
+                                            if (current < max) {
+                                                const newQty = current + 1;
+                                                updateQtyOnServer(productId, newQty, controls);
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
                     <div class="cart-item-quantity">
                         @if($item['product']->stock > 0)
-                            {{-- Show how many can actually be bought (available quantity) rather than the requested quantity --}}
-                            <span class="quantity-display">Qty: {{ $item['available_quantity'] }}</span>
+                            <div class="qty-controls" data-product-id="{{ $item['product']->id }}" data-max="{{ $item['product']->stock }}">
+                                <button type="button" class="qty-btn qty-decrement" aria-label="Decrease">−</button>
+                                <input type="text" class="qty-input" value="{{ $item['available_quantity'] }}" readonly aria-label="Quantity for {{ $item['product']->name }}">
+                                <button type="button" class="qty-btn qty-increment" aria-label="Increase">+</button>
+                            </div>
                         @else
                             <span style="color: #dc3545; font-weight: 500;">Unavailable</span>
                         @endif

@@ -126,19 +126,34 @@ class ShopController extends Controller
     {
         $cart = session()->get('cart', []);
         $quantity = max(1, (int) $request->quantity);
-        
-        // If requested quantity exceeds available stock, cap it and notify user.
-        if ($quantity > $product->stock) {
-            $old = isset($cart[$product->id]) ? $cart[$product->id] : 0;
-            $cart[$product->id] = $product->stock;
-            session()->put('cart', $cart);
 
-            $message = 'Requested quantity exceeds available stock. Quantity adjusted to ' . $product->stock . '.';
-            return redirect()->back()->with('success', $message);
-        }
+        // Cap to available stock
+        $finalQty = min($quantity, $product->stock);
 
-        $cart[$product->id] = $quantity;
+        $cart[$product->id] = $finalQty;
         session()->put('cart', $cart);
+
+        // If AJAX/JSON request, return structured JSON with updated item and totals
+        if ($request->expectsJson()) {
+            $subtotal = $product->price * $finalQty;
+
+            // Recalculate cart total
+            $total = 0;
+            foreach ($cart as $id => $qty) {
+                $p = Product::find($id);
+                if ($p) {
+                    $total += $p->price * min($qty, $p->stock);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'quantity' => $finalQty,
+                'subtotal' => number_format($subtotal, 2),
+                'total' => number_format($total, 2),
+                'message' => $quantity > $product->stock ? 'Requested quantity exceeded stock and was adjusted.' : 'Cart updated.'
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Cart updated!');
     }
