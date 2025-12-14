@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Your Order - Buttercloud Bakery')
+@section('title', 'Your Order - ButterCloud Bakery')
 
 @section('content')
     <h1 class="page-title">Shopping Cart</h1>
@@ -48,7 +48,8 @@
                     </div>
                     <div class="cart-item-quantity">
                         @if($item['product']->stock > 0)
-                            <span class="quantity-display">Qty: {{ $item['quantity'] }}</span>
+                            {{-- Show how many can actually be bought (available quantity) rather than the requested quantity --}}
+                            <span class="quantity-display">Qty: {{ $item['available_quantity'] }}</span>
                         @else
                             <span style="color: #dc3545; font-weight: 500;">Unavailable</span>
                         @endif
@@ -60,7 +61,9 @@
                         <form action="{{ route('cart.remove', $item['product']) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            <button type="submit" class="btn btn-danger btn-sm" aria-label="Remove {{ $item['product']->name }}">
+                                <span class="remove-icon">🗑️</span>
+                            </button>
                         </form>
                     </div>
                 </div>
