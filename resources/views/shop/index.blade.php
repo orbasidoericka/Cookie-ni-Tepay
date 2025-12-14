@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Fresh Pastries - Buttercloud Bakery')
+@section('title', 'Fresh Pastries - ButterCloud Bakery')
 
 @section('content')
     <h1 class="page-title">Fresh Baked Pastries</h1>
@@ -176,7 +176,14 @@
                                 closeBuyNowModal();
                                 window.location.href = '/checkout';
                             } else {
-                                alert(data.error || 'An error occurred. Please try again.');
+                                // If server returned an informational message (e.g., already at max quantity),
+                                // close modal and send user to cart instead of showing a blocking alert.
+                                if (data.message) {
+                                    closeBuyNowModal();
+                                    window.location.href = '/cart';
+                                } else {
+                                    alert(data.error || 'An error occurred. Please try again.');
+                                }
                             }
                         })
                         .catch(error => {

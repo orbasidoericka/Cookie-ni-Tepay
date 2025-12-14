@@ -72,12 +72,30 @@ class ShopController extends Controller
         
         // Check if new quantity exceeds available stock
         if ($newQuantity > $product->stock) {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!'], 400);
+            // If the cart already has the maximum, do not show an error — user already has the available items.
+            if ($currentQty >= $product->stock) {
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'You already have the maximum quantity of ' . $product->name . ' in your cart.'], 200);
+                }
+
+                return redirect()->back()->with('success', 'You already have the maximum quantity of ' . $product->name . ' in your cart.');
             }
-            return redirect()->back()->with('error', 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!');
+
+            // Otherwise, cap the quantity to the available stock and add whatever remains.
+            $added = $product->stock - $currentQty;
+            $cart[$product->id] = $product->stock;
+            session()->put('cart', $cart);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $added . ' × ' . $product->name . ' added to cart (quantity adjusted to available stock).'
+                ]);
+            }
+
+            return redirect()->back()->with('success', $added . ' × ' . $product->name . ' added to cart (quantity adjusted to available stock).');
         }
-        
+
         $cart[$product->id] = $newQuantity;
 
         session()->put('cart', $cart);
@@ -109,11 +127,16 @@ class ShopController extends Controller
         $cart = session()->get('cart', []);
         $quantity = max(1, (int) $request->quantity);
         
-        // Check if requested quantity exceeds available stock
+        // If requested quantity exceeds available stock, cap it and notify user.
         if ($quantity > $product->stock) {
-            return redirect()->back()->with('error', 'Only ' . $product->stock . ' ' . $product->name . ' available in stock!');
+            $old = isset($cart[$product->id]) ? $cart[$product->id] : 0;
+            $cart[$product->id] = $product->stock;
+            session()->put('cart', $cart);
+
+            $message = 'Requested quantity exceeds available stock. Quantity adjusted to ' . $product->stock . '.';
+            return redirect()->back()->with('success', $message);
         }
-        
+
         $cart[$product->id] = $quantity;
         session()->put('cart', $cart);
 
