@@ -136,6 +136,9 @@
             transform: translateY(-50%);
             color: #999;
             font-size: 1.1rem;
+            /* Use emoji-capable font fallbacks so icons render correctly */
+            font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1;
         }
 
         .btn-register {
@@ -247,7 +250,7 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <input type="password" id="password" name="password" placeholder="••••••••••••••••" required>
-                        <span class="input-icon">�</span>
+                        <span class="input-icon">&#128274;</span>
                     </div>
                 </div>
 
@@ -255,7 +258,7 @@
                     <label for="password_confirmation">Confirm Password</label>
                     <div class="input-wrapper">
                         <input type="password" id="password_confirmation" name="password_confirmation" placeholder="••••••••••••••••" required>
-                        <span class="input-icon">�</span>
+                        <span class="input-icon">&#128274;</span>
                     </div>
                 </div>
 

@@ -137,6 +137,8 @@
             transform: translateY(-50%);
             color: #999;
             font-size: 1.1rem;
+            font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1;
         }
 
         .remember-me {
@@ -270,7 +272,7 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <input type="password" id="password" name="password" placeholder="••••••••••••••••" required>
-                        <span class="input-icon">👁️</span>
+                        <span class="input-icon">&#128065;</span>
                     </div>
                 </div>
 
