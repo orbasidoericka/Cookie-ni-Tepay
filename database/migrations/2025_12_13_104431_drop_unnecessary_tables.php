@@ -16,7 +16,14 @@ return new class extends Migration
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('jobs');
         Schema::dropIfExists('job_batches');
-        Schema::dropIfExists('sessions');
+
+        // Protect sessions table in environments that use database-backed sessions.
+        // If you *really* want to drop sessions, set FORCE_DROP_SESSIONS=true in env.
+        $forceDropSessions = filter_var(env('FORCE_DROP_SESSIONS', false), FILTER_VALIDATE_BOOLEAN);
+        $sessionDriver = config('session.driver', env('SESSION_DRIVER', 'database'));
+        if ($forceDropSessions || $sessionDriver !== 'database') {
+            Schema::dropIfExists('sessions');
+        }
     }
 
     /**
